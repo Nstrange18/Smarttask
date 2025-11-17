@@ -17,3 +17,45 @@
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-in-out;
 }
+
+@theme {
+  --color-brand: #9395D3;
+  --color-brand-dark: #6b6ecf;
+  --color-accent: #5c5fbf;
+
+  --radius-card: 1.5rem;
+  --radius-btn: .75rem;
+
+  --spacing-card: 1.5rem;
+  --spacing-btn: .75rem;
+
+  --font-display: "Inter", sans-serif;
+}
+
+/* -------------------------------------------------- */
+/*               ✨ Custom Utilities                  */
+/* -------------------------------------------------- */
+@utility btn {
+  @apply px-btn py-btn rounded-btn font-semibold transition active:scale-95;
+}
+
+@utility btn-primary {
+  @apply btn bg-brand text-white hover:bg-brand-dark;
+}
+
+@utility btn-secondary {
+  @apply btn bg-white text-brand border border-brand hover:bg-brand/10;
+}
+
+/* -------------------------------------------------- */
+/*               ✨ Custom Components                 */
+/* -------------------------------------------------- */
+@layer components {
+  .card {
+    @apply bg-white rounded-card p-card shadow-md hover:shadow-lg transition;
+  }
+
+  .glass-card {
+    @apply bg-white/30 backdrop-blur-md rounded-card p-card shadow;
+  }
+}

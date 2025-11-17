@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios.js";
 
 const TaskForm = ({ setIsModalOpen, refresh, editingTask }) => {
   // Preload existing data if editing
@@ -10,6 +10,7 @@ const TaskForm = ({ setIsModalOpen, refresh, editingTask }) => {
     status: "Pending",
     priority: "Medium",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (editingTask) setFormData(editingTask);
@@ -23,19 +24,24 @@ const TaskForm = ({ setIsModalOpen, refresh, editingTask }) => {
   // Submit form (Create or Update)
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       if (editingTask) {
-        await axios.put(
-          `http://localhost:5000/api/tasks/${editingTask._id}`,
+        await api.put(
+          `/tasks/${editingTask._id}`,
           formData
         );
       } else {
-        await axios.post("http://localhost:5000/api/tasks", formData);
+        await api.post("/tasks", formData);
+        console.log("Form data", formData);
+        
       }
       refresh(); // Reload task list
       setIsModalOpen(false); // Close modal
+      setIsLoading(!isLoading);
     } catch (err) {
       console.error("Error saving task:", err);
+      setIsLoading(!isLoading);
     }
   };
 
@@ -115,7 +121,7 @@ const TaskForm = ({ setIsModalOpen, refresh, editingTask }) => {
             type="submit"
             className="bg-[#9395D3] text-white px-4 py-2 rounded-lg hover:bg-[#7c7ede]"
           >
-            Save Task
+            {isLoading ? "Saving..." : "Save Task"}
           </button>
         </div>
       </form>

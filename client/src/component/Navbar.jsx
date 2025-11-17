@@ -7,23 +7,24 @@ import { Icon } from "@iconify/react";
 // Navbar receives props from TaskList (for search, filter, and sort)
 export default function Navbar({ onSearch, onFilter, onSort, filters, sortType }) {
   const [selectedDate] = useState(new Date());
-
+  const user = JSON.parse(localStorage.getItem("user"));
+  
   return (
-    // MAIN NAVBAR CONTAINER
     <div className="flex flex-col w-full rounded-lg rounded-b-none bg-[#9395D3] text-white shadow-md px-[clamp(1rem,3vw,2rem)] py-[clamp(1rem,2vw,1.5rem)] gap-4">
-
-      {/* =======================
-          TOP ROW - LOGO + SEARCH + CALENDAR
-      ======================= */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-5">
 
         {/* LOGO */}
         <div className="flex items-center justify-center sm:justify-start w-full sm:w-auto">
           <img
-            src="/smarttask-logo.png"
-            alt="SmartTask"
-            className="w-[clamp(160px,20vw,200px)]"
+            src={user?.profilePic || "/default-avatar.png"}
+            alt="profile"
+            className="w-20 h-20 rounded-full border-2 border-white object-cover"
           />
+
+          <div className="ml-4">
+            <p className="text-sm font-medium">Hello,</p>
+            <p className="text-lg font-semibold">{user?.name || "User"}</p>
+          </div>
         </div>
 
         {/* SEARCH + CALENDAR */}

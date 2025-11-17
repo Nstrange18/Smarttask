@@ -7,6 +7,13 @@ const taskSchema = new mongoose.Schema(
     priority: { type: String, default: "Medium" },
     dueDate: { type: Date },
     status: { type: String, default: "Pending" },
+
+    // ⭐ FIX — Add this field
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
   { timestamps: true }
 );

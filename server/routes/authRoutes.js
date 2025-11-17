@@ -1,6 +1,8 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { protect } from "../middleware/authMiddleware.js";
+import upload from "../middleware/upload.js";
 import bcrypt from "bcryptjs";
 
 const router = express.Router();
@@ -28,6 +30,7 @@ router.post("/signup", async (req, res) => {
 
     res.status(201).json({
       message: "Signup Successful",
+      token,
       user: {
         id: user._id,
         name: user.name,
@@ -36,6 +39,7 @@ router.post("/signup", async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
+    console.log("Signup Error", error);
   }
 });
 
@@ -44,9 +48,9 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = new User.findOne({ email });
+    const user = await User.findOne({ email });
 
-    if (!email) {
+    if (!user) {
       return res.status(400).json({ message: "Invalid Credentials" });
     }
 
@@ -60,16 +64,53 @@ router.post("/login", async (req, res) => {
       expiresIn: "7d",
     });
 
-    res
-      .status(200)
-      .json({
-        message: "Login Successful",
-        user: { id: user._id, email: user.email, password: user.password }
-      });
+    res.status(200).json({
+      message: "Login Successful",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        profilePic: user.profilePic,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
+    console.log("Login Error", error);
   }
 });
 
+// UPDATE PROFILE
+router.put(
+  "/profile",
+  protect,
+  upload.single("profilePhoto"),
+  async (req, res) => {
+    try {
+      console.log("BODY:", req.body);
+      console.log("FILE:", req.file);
+
+      const updateData = {
+        name: req.body.name,
+        email: req.body.email,
+      };
+
+      if (req.file && req.file.path) {
+        updateData.profilePic = req.file.path;
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(
+        req.user.id,
+        updateData,
+        { new: true }
+      ).select("-password");
+
+      return res.json(updatedUser);
+    } catch (err) {
+      console.error("PROFILE UPDATE ERROR:", err);
+      res.status(500).json({ message: err.message });
+    }
+  }
+);
 
 export default router;
