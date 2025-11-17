@@ -3,13 +3,19 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import taskRoutes from "./routes/tasksRoutes.js";
-import authRoutes from "./routes/authRoutes.js"
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://smarttask-eight.vercel.app"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // Routes
