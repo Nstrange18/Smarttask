@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Sidebar from "../component/Sidebar";
 import { updateProfile } from "../api/user";
+import swal from "sweetalert";
 
 export default function Profile({ user, setUser }) {
   const [form, setForm] = useState({
@@ -32,11 +33,19 @@ export default function Profile({ user, setUser }) {
       localStorage.setItem("user", JSON.stringify(res.data));
       setUser(res.data);
       setIsLoading(false);
-      alert("Profile updated!");
+
+      swal(
+        "Profile Updated",
+        "Your profile has been updated successfully.",
+        "success"
+      );
     } catch (err) {
-      console.error(err);
       setIsLoading(!isLoading);
-      alert("Update failed.");
+      swal(
+        "Update failed",
+        err.response?.data?.message || "Something went wrong",
+        "error"
+      );
     }
   };
 

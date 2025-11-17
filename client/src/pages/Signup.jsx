@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
+import swal from "sweetalert";
 
 export default function Signup({ setUser }) {
   const [form, setForm] = useState({
@@ -19,17 +20,20 @@ export default function Signup({ setUser }) {
     setIsLoading(true);
     try {
       const res = await api.post("/auth/signup", form);
-      console.log("✅ Signup success:", res.data);
+      swal("Account Created 🎉", "Welcome to SmartTask!", "success");
 
       setUser(res.data.user);
       localStorage.setItem("user", JSON.stringify(res.data.user));
       localStorage.setItem("token", res.data.token);
       window.location.href = "/";
 
-      window.location.href = "/";
       setIsLoading(!isLoading);
     } catch (err) {
-      console.error("❌ Signup error:", err.response?.data || err.message);
+      swal(
+        "Signup failed",
+        err.response?.data?.message || "Something went wrong",
+        "error"
+      );
       setIsLoading(!isLoading);
     }
   };

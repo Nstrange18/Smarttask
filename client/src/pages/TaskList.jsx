@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { FiEdit, FiTrash2, FiPlus } from "react-icons/fi";
 import TaskForm from "./TaskForm.jsx";
 import api from "../api/axios.js";
+import swal from "sweetalert";
 import Sidebar from "../component/Sidebar.jsx";
 
 const TaskList = ({ tasks: initialTasks, refresh }) => {
@@ -83,12 +84,24 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
     );
   };
 
-  const handleDelete = async (id) => {
-    await api.delete(`/tasks/${id}`);
-    refresh();
+  const handleDelete = (id) => {
+    swal({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this task!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        await api.delete(`/tasks/${id}`);
+        refresh();
+        swal("Deleted!", "Your task has been removed.", "success");
+      }
+    });
   };
 
   const handleComplete = async (id, status) => {
+    swal("Task Completed!", "Nice job ✔", "success");
     await api.put(`/tasks/${id}`, { status });
     refresh();
   };
@@ -105,7 +118,7 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
 
   return (
     <div>
-        <Sidebar />
+      <Sidebar />
       <div className="w-full min-h-screen flex flex-col items-center bg-[gainsboro] pb-10">
         <div className="bg-white max-w-4/5 min-w-38/100 w-full h-auto rounded-lg shadow-md flex flex-col items-center justify-between my-2 pb-10">
           <Navbar

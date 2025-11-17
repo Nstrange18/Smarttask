@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
+import swal from "sweetalert";
 
 export default function Login({ setUser }) {
   const [form, setForm] = useState({ email: "", password: "" });
-  const [setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -16,7 +16,8 @@ export default function Login({ setUser }) {
     setIsLoading(true);
     try {
       const res = await api.post("/auth/login", form);
-      console.log("✅ Logged in:", res.data);
+
+      swal("Welcome back!", "Login successful 🎉", "success");
 
       setUser(res.data.user);
       localStorage.setItem("user", JSON.stringify(res.data.user));
@@ -24,11 +25,14 @@ export default function Login({ setUser }) {
 
       // redirect or store token
       window.location.href = "/";
-      setIsLoading(!isLoading);
+      setIsLoading(false);
     } catch (err) {
-      console.error("❌ Login error:", err.response?.data || err.message);
-      setIsLoading(!isLoading);
-      setError(err.response?.data?.message || "Login failed. Please try again.");
+      swal(
+        "Login failed",
+        err.response?.data?.message || "Something went wrong",
+        "error"
+      );
+      setIsLoading(false);
     }
   };
 
