@@ -27,14 +27,14 @@ export default function Signup({ setUser }) {
       localStorage.setItem("token", res.data.token);
       window.location.href = "/";
 
-      setIsLoading(!isLoading);
+      setIsLoading(false);
     } catch (err) {
       swal(
         "Signup failed",
         err.response?.data?.message || "Something went wrong",
         "error"
       );
-      setIsLoading(!isLoading);
+      setIsLoading(false);
     }
   };
 
