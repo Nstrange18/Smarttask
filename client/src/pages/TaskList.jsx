@@ -14,6 +14,7 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
   const [filteredTasks, setFilteredTasks] = useState(initialTasks);
   const [filters, setFilters] = useState({ status: "", priority: "" });
   const [sortType, setSortType] = useState("");
+  const [sidebarHover, setSidebarHover] = useState(false);
 
   // Update filters
   const handleFilter = (type, value) => {
@@ -25,7 +26,7 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
     setSortType(type);
   };
 
-  // Apply filters and sorting
+  // Apply filters + sorting
   const processedTasks = filteredTasks
     .filter((task) => {
       const statusMatch = !filters.status || task.status === filters.status;
@@ -51,10 +52,12 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
 
   const handleSearch = (term) => {
     setSearchTerm(term);
+
     if (!term.trim()) {
       setFilteredTasks(initialTasks);
       return;
     }
+
     const results = initialTasks.filter(
       (task) =>
         task.title.toLowerCase().includes(term.toLowerCase()) ||
@@ -118,9 +121,22 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
 
   return (
     <div>
-      <Sidebar />
-      <div className="w-full min-h-screen flex flex-col items-center bg-[gainsboro] pb-10">
-        <div className="bg-white max-w-4/5 min-w-38/100 w-full h-auto rounded-lg shadow-md flex flex-col items-center justify-between my-2 pb-10">
+      <Sidebar setSidebarHover={setSidebarHover} />
+
+      {sidebarHover && (
+        <div className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/30 backdrop-blur-sm z-[50] transition-all"></div>
+      )}
+
+      {/* 🔥 OVERLAY (only appears when modal is open) */}
+      {isModalOpen && (
+        <div
+          className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/40 backdrop-blur-sm z-[90] transition-opacity duration-300"
+          onClick={() => setIsModalOpen(false)}
+        />
+      )}
+
+      <div className="w-full min-h-screen flex flex-col items-center bg-[gainsboro] pb-10 overflow-hidden">
+        <div className="bg-white max-w-4/5 min-w-38/100 w-full rounded-lg shadow-md flex flex-col items-center pb-10 my-2">
           <Navbar
             onSearch={handleSearch}
             onFilter={handleFilter}
@@ -128,6 +144,8 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
             filters={filters}
             sortType={sortType}
           />
+
+          {/* No tasks */}
           {filteredTasks.length === 0 ? (
             <p className="pt-6 text-[#6668a3] font-medium text-center">
               No matching tasks found.
@@ -136,18 +154,20 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
             processedTasks.map((task) => (
               <div
                 key={task._id}
-                className="w-4/5 bg-white/90 backdrop-blur-md border border-[#e2e4ff] rounded-3xl shadow-md
-                p-5 mt-5 animate-fadeIn hover:shadow-lg hover:shadow-[#d6d8ff]/50
-                transition-all duration-500 ease-in-out transform hover:-translate-y-1"
+                className="w-4/5 bg-white/90 border border-[#e2e4ff] rounded-3xl shadow-md p-5 mt-5 hover:shadow-lg hover:shadow-[#d6d8ff]/50 transition-all duration-500 ease-in-out transform hover:-translate-y-1"
               >
                 <div className="flex justify-between items-start">
                   <div className="flex flex-col gap-1">
-                    <h3 className="text-[1.25rem] font-semibold text-[#5c5fbf] leading-tight">
+                    {/* Fixed text wrap */}
+                    <h3 className="text-[1.25rem] font-semibold text-[#5c5fbf] leading-tight break-all">
                       {highlightText(task.title, searchTerm)}
                     </h3>
-                    <p className="text-[0.95rem] text-gray-700 italic">
+
+                    <p className="text-[0.95rem] text-gray-700 italic leading-tight break-all max-w-full overflow-hidden">
                       {highlightText(task.description, searchTerm)}
                     </p>
+
+                    {/* Task metadata */}
                     <div className="text-sm mt-2 space-y-1">
                       <p className="text-gray-500">
                         <span className="font-medium text-[#6668a3]">Due:</span>{" "}
@@ -155,8 +175,9 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
                           ? new Date(task.dueDate).toDateString()
                           : "No date"}
                       </p>
+
                       <p
-                        className={`text-gray-600 ${
+                        className={`${
                           task.status === "Completed"
                             ? "text-green-600 font-medium"
                             : "text-[#6668a3]"
@@ -164,8 +185,9 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
                       >
                         Status: {task.status}
                       </p>
+
                       <p
-                        className={`text-sm font-medium ${
+                        className={`font-medium ${
                           task.priority === "High"
                             ? "text-red-500"
                             : task.priority === "Medium"
@@ -176,11 +198,11 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
                         Priority: {task.priority}
                       </p>
                     </div>
+
+                    {/* Complete Button */}
                     {task.status !== "Completed" && (
                       <button
-                        className="mt-3 px-3 py-1 bg-[#9395D3]/20 text-[#5e62ce] rounded-lg
-                       hover:bg-[#9395D3]/40 font-medium transition-all duration-300
-                       ease-in-out hover:scale-105"
+                        className="mt-3 px-3 py-1 bg-[#9395D3]/20 text-[#5e62ce] rounded-lg hover:bg-[#9395D3]/40 font-medium transition-all duration-300 hover:scale-105"
                         onClick={() => {
                           handleComplete(task._id, "Completed");
                           setIsComplete(!isComplete);
@@ -190,6 +212,8 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
                       </button>
                     )}
                   </div>
+
+                  {/* Edit + Delete */}
                   <div className="flex flex-col gap-3 items-end">
                     <FiEdit
                       className="text-blue-600 cursor-pointer hover:scale-110 transition-transform duration-200"
@@ -204,24 +228,27 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
               </div>
             ))
           )}
+
           {/* Floating Add Button */}
           <button
-            className="fixed bottom-8 right-38 bg-[#9395D3] hover:bg-[#6267f3] text-white p-5 rounded-full shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none animate-bounce-slow"
+            className="fixed bottom-8 right-38 bg-[#9395D3] hover:bg-[#6267f3] text-white p-5 rounded-full shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none animate-bounce-slow z-[95]"
             aria-label="Add task"
-            title="Add task"
             onClick={handleAdd}
           >
             <FiPlus size={24} />
           </button>
         </div>
-        {/* Modal Form */}
+
+        {/* Modal */}
         {isModalOpen && (
-          <TaskForm
-            isModalOpen={isModalOpen}
-            setIsModalOpen={setIsModalOpen}
-            refresh={refresh}
-            editingTask={editingTask} // ✅ passes selected task
-          />
+          <div className="z-[100] fixed top-0 left-0 w-full h-full flex items-center justify-center">
+            <TaskForm
+              isModalOpen={isModalOpen}
+              setIsModalOpen={setIsModalOpen}
+              refresh={refresh}
+              editingTask={editingTask}
+            />
+          </div>
         )}
       </div>
     </div>

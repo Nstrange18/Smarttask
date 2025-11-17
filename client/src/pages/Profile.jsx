@@ -10,6 +10,7 @@ export default function Profile({ user, setUser }) {
     profilePhoto: null,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [sidebarHover, setSidebarHover] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -53,7 +54,11 @@ export default function Profile({ user, setUser }) {
     <div className="flex min-h-screen bg-[#f7f7ff]">
       <div className="relative">
         <div className="group/sidebar">
-          <Sidebar />
+          <Sidebar setSidebarHover={setSidebarHover} />
+
+          {sidebarHover && (
+            <div className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/30 backdrop-blur-sm z-[50] transition-all"></div>
+          )}
           <div
             className="overlay hidden fixed inset-0 bg-black/40 backdrop-blur-sm 
                     opacity-0 transition duration-500 
