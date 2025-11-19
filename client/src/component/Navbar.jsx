@@ -10,7 +10,7 @@ export default function Navbar({ onSearch, onFilter, onSort, filters, sortType }
   const user = JSON.parse(localStorage.getItem("user"));
   
   return (
-    <div className="flex flex-col w-full rounded-lg rounded-b-none bg-[#9395D3] text-white shadow-md px-[clamp(1rem,3vw,2rem)] py-[clamp(1rem,2vw,1.5rem)] gap-4">
+    <div className="flex flex-col w-full rounded-lg rounded-b-none bg-brand text-white shadow-md px-[clamp(1rem,3vw,2rem)] py-[clamp(1rem,2vw,1.5rem)] gap-4">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-5">
 
         {/* LOGO */}

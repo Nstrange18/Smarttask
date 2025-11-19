@@ -119,7 +119,7 @@ const TaskForm = ({ setIsModalOpen, refresh, editingTask }) => {
           </button>
           <button
             type="submit"
-            className="bg-[#9395D3] text-white px-4 py-2 rounded-lg hover:bg-[#7c7ede]"
+            className="bg-brand text-white px-4 py-2 rounded-lg hover:bg-[#7c7ede]"
           >
             {isLoading ? "Saving..." : "Save Task"}
           </button>

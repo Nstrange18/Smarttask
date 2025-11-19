@@ -61,7 +61,7 @@ export default function Signup({ setUser }) {
             placeholder="Full Name"
             value={form.name}
             onChange={handleChange}
-            className="border border-[#e1e2f1] rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#9395D3] focus:outline-none"
+            className="border border-[#e1e2f1] rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand focus:outline-none"
             required
           />
           <input
@@ -70,7 +70,7 @@ export default function Signup({ setUser }) {
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
-            className="border border-[#e1e2f1] rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#9395D3] focus:outline-none"
+            className="border border-[#e1e2f1] rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand focus:outline-none"
             required
           />
           <input
@@ -79,13 +79,13 @@ export default function Signup({ setUser }) {
             placeholder="Password"
             value={form.password}
             onChange={handleChange}
-            className="border border-[#e1e2f1] rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#9395D3] focus:outline-none"
+            className="border border-[#e1e2f1] rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand focus:outline-none"
             required
           />
 
           <button
             type="submit"
-            className="mt-3 bg-[#9395D3] hover:bg-[#6267f3] text-white font-medium rounded-xl py-3 transition-all duration-300 shadow-md"
+            className="mt-3 bg-brand hover:bg-[#6267f3] text-white font-medium rounded-xl py-3 transition-all duration-300 shadow-md"
           >
             {isLoading ? "Signing Up..." : "Sign Up"}
           </button>

@@ -57,7 +57,7 @@ export default function Profile({ user, setUser }) {
           <Sidebar setSidebarHover={setSidebarHover} />
 
           {sidebarHover && (
-            <div className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/30 backdrop-blur-sm z-[50] transition-all"></div>
+            <div className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/30 backdrop-blur-sm z-50 transition-all"></div>
           )}
           <div
             className="overlay hidden fixed inset-0 bg-black/40 backdrop-blur-sm 
@@ -98,7 +98,7 @@ export default function Profile({ user, setUser }) {
               <input
                 type="file"
                 onChange={handleFile}
-                className="text-sm text-[#5a5dcf] file:bg-[#9395D3] file:text-white file:px-4 file:py-2 
+                className="text-sm text-[#5a5dcf] file:bg-brand file:text-white file:px-4 file:py-2 
                 file:rounded-lg file:border-none cursor-pointer"
               />
             </div>
@@ -109,7 +109,7 @@ export default function Profile({ user, setUser }) {
               value={form.name}
               onChange={handleChange}
               className="w-full p-3 border border-[#ddddef] rounded-xl shadow-sm 
-              focus:ring-2 focus:ring-[#9395D3] focus:outline-none transition"
+              focus:ring-2 focus:ring-brand focus:outline-none transition"
               placeholder="Name"
             />
 
@@ -119,14 +119,14 @@ export default function Profile({ user, setUser }) {
               value={form.email}
               onChange={handleChange}
               className="w-full p-3 border border-[#ddddef] rounded-xl shadow-sm 
-              focus:ring-2 focus:ring-[#9395D3] focus:outline-none transition"
+              focus:ring-2 focus:ring-brand focus:outline-none transition"
               placeholder="Email"
             />
 
             {/* Update button */}
             <button
               className="w-full mt-4 py-3 rounded-xl text-white font-medium 
-              bg-gradient-to-r from-[#9395D3] to-[#5a5dcf] 
+              bg-linear-to-r from-brand to-[#5a5dcf] 
               hover:opacity-90 shadow-md hover:shadow-lg transition"
             >
               {isLoading ? "Updating..." : "Update Profile"}

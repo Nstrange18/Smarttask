@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 const Sidebar = ({ setSidebarHover }) => {
-  const [hover, setHover] = useState(false);
+  const [_hover, setHover] = useState(false);
 
   return (
     <div
@@ -58,17 +58,26 @@ const Sidebar = ({ setSidebarHover }) => {
         </div>
       </div>
 
-      <div
-        className="mt-auto pb-7"
-        onClick={() => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          window.location.href = "/login";
-        }}
-      >
-        <div className="flex flex-col items-center cursor-pointer gap-1 hover:gap-2 transition-all duration-300">
+      <div className="mt-auto pb-7 flex flex-col gap-5">
+        {/* <div className="flex flex-col items-center cursor-pointer gap-1 hover:gap-2 transition-all duration-300">
+          <Icon icon="mdi:cog" width={25} className="text-[gainsboro]" />
+          <h1 className="text-[gainsboro]
+                opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out
+                invisible max-w-0 group-hover:max-w-full group-hover:visible">Settings</h1>
+        </div> */}
+
+        <div
+          className="flex flex-col items-center cursor-pointer gap-1 hover:gap-2 transition-all duration-300"
+          onClick={() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/login";
+          }}
+        >
           <Icon icon="mdi:logout" width={25} className="text-red-600" />
-          <h1 className="text-red-600">Logout</h1>
+          <h1 className="text-red-600
+                opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out
+                invisible max-w-0 group-hover:max-w-full group-hover:visible">Logout</h1>
         </div>
       </div>
     </div>
@@ -76,4 +85,3 @@ const Sidebar = ({ setSidebarHover }) => {
 };
 
 export default Sidebar;
- 

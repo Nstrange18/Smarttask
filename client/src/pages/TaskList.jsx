@@ -47,8 +47,20 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
     });
 
   useEffect(() => {
-    handleSearch(searchTerm);
-  }, [initialTasks]);
+    // Re-apply the current search term whenever the task list or the search term changes
+    if (!searchTerm.trim()) {
+      setFilteredTasks(initialTasks);
+      return;
+    }
+
+    const results = initialTasks.filter(
+      (task) =>
+        task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        task.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    setFilteredTasks(results);
+  }, [initialTasks, searchTerm]);
 
   const handleSearch = (term) => {
     setSearchTerm(term);
@@ -124,7 +136,7 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
       <Sidebar setSidebarHover={setSidebarHover} />
 
       {sidebarHover && (
-        <div className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/30 backdrop-blur-sm z-50 transition-all"></div>
+        <div className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/30 backdrop-blur-sm z-50 transition-all ease-in-out duration-300"></div>
       )}
 
       {/* 🔥 OVERLAY (only appears when modal is open) */}
@@ -154,12 +166,12 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
             processedTasks.map((task) => (
               <div
                 key={task._id}
-                className="w-4/5 bg-white/90 border border-[#e2e4ff] rounded-3xl shadow-md p-5 mt-5 hover:shadow-lg hover:shadow-[#d6d8ff]/50 transition-all duration-500 ease-in-out transform hover:-translate-y-1"
+                className="w-4/5 bg-white/90 border border-[#e2e4ff] rounded-3xl shadow-md p-5 mt-5 hover:shadow-lg hover:shadow-[#d6d8ff]/50 transition-all duration-500 ease-in-out transform"
               >
                 <div className="flex justify-between items-start">
                   <div className="flex flex-col gap-1">
                     {/* Fixed text wrap */}
-                    <h3 className="text-[1.25rem] font-semibold text-[#5c5fbf] leading-tight break-all">
+                    <h3 className="text-[1.25rem] font-semibold text-accent leading-tight break-all">
                       {highlightText(task.title, searchTerm)}
                     </h3>
 
@@ -202,7 +214,7 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
                     {/* Complete Button */}
                     {task.status !== "Completed" && (
                       <button
-                        className="mt-3 px-3 py-1 bg-[#9395D3]/20 text-[#5e62ce] rounded-lg hover:bg-[#9395D3]/40 font-medium transition-all duration-300 hover:scale-105"
+                        className="mt-3 px-3 py-1 bg-brand/20 text-[#5e62ce] rounded-lg hover:bg-brand/40 font-medium transition-all duration-300 hover:scale-105"
                         onClick={() => {
                           handleComplete(task._id, "Completed");
                           setIsComplete(!isComplete);
@@ -231,7 +243,7 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
 
           {/* Floating Add Button */}
           <button
-            className="fixed bottom-8 right-38 bg-[#9395D3] hover:bg-[#6267f3] text-white p-5 rounded-full shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none animate-bounce-slow z-[95]"
+            className="fixed bottom-8 right-38 bg-brand hover:bg-[#6267f3] text-white p-5 rounded-full shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none animate-bounce-slow z-95"
             aria-label="Add task"
             onClick={handleAdd}
           >
