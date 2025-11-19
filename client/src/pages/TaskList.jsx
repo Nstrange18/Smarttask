@@ -136,7 +136,7 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
       <Sidebar setSidebarHover={setSidebarHover} />
 
       {sidebarHover && (
-        <div className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/30 backdrop-blur-sm z-50 transition-all ease-in-out duration-300"></div>
+        <div className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/30 backdrop-blur-sm z-50 transition-all ease-in duration-700 delay-150"></div>
       )}
 
       {/* 🔥 OVERLAY (only appears when modal is open) */}

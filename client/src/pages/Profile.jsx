@@ -59,11 +59,6 @@ export default function Profile({ user, setUser }) {
           {sidebarHover && (
             <div className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/30 backdrop-blur-sm z-50 transition-all"></div>
           )}
-          <div
-            className="overlay hidden fixed inset-0 bg-black/40 backdrop-blur-sm 
-                    opacity-0 transition duration-500 
-                    group-hover/sidebar:block group-hover/sidebar:opacity-100"
-          ></div>
         </div>
       </div>
 
