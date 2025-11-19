@@ -7,7 +7,7 @@ const Sidebar = ({ setSidebarHover }) => {
 
   return (
     <div
-      className="group fixed top-0 bg-brand hover:w-50 transition-all duration-500 ease-in-out h-full w-20 p-4 z-[100] rounded-tr-btn rounded-br-btn shadow-xl flex flex-col items-center"
+      className="group fixed top-0 bg-brand hover:w-50 transition-all duration-500 ease-in-out h-full w-20 p-4 z-100 rounded-tr-btn rounded-br-btn shadow-xl flex flex-col items-center"
       onMouseEnter={() => {
         setHover(true);
         setSidebarHover(true);

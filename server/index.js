@@ -11,7 +11,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://smarttask-k0sx9jnfw-nstrange18s-projects.vercel.app"],
+    origin: ["http://localhost:5173", "https://smarttask-nu.vercel.app"],
     credentials: true,
   })
 );

@@ -124,13 +124,13 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
       <Sidebar setSidebarHover={setSidebarHover} />
 
       {sidebarHover && (
-        <div className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/30 backdrop-blur-sm z-[50] transition-all"></div>
+        <div className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/30 backdrop-blur-sm z-50 transition-all"></div>
       )}
 
       {/* 🔥 OVERLAY (only appears when modal is open) */}
       {isModalOpen && (
         <div
-          className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/40 backdrop-blur-sm z-[90] transition-opacity duration-300"
+          className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/40 backdrop-blur-sm z-90 transition-opacity duration-300"
           onClick={() => setIsModalOpen(false)}
         />
       )}
@@ -241,7 +241,7 @@ const TaskList = ({ tasks: initialTasks, refresh }) => {
 
         {/* Modal */}
         {isModalOpen && (
-          <div className="z-[100] fixed top-0 left-0 w-full h-full flex items-center justify-center">
+          <div className="z-100 fixed top-0 left-0 w-full h-full flex items-center justify-center">
             <TaskForm
               isModalOpen={isModalOpen}
               setIsModalOpen={setIsModalOpen}
