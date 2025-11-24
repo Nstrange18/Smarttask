@@ -2,8 +2,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 import swal from "sweetalert";
+import PasswordInput from "../component/PasswordInput";
+import useTheme from "../hooks/useTheme";
 
 export default function Signup({ setUser }) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -18,39 +23,63 @@ export default function Signup({ setUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
     try {
       const res = await api.post("/auth/signup", form);
+
       swal("Account Created 🎉", "Welcome to SmartTask!", "success");
 
       setUser(res.data.user);
       localStorage.setItem("user", JSON.stringify(res.data.user));
       localStorage.setItem("token", res.data.token);
-      window.location.href = "/";
 
-      setIsLoading(false);
+      window.location.href = "/";
     } catch (err) {
       swal(
         "Signup failed",
         err.response?.data?.message || "Something went wrong",
         "error"
       );
+    } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#e4e3ff] to-white">
-      <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl w-[90%] max-w-md p-8 text-center border border-[#e1e2f1] animate-fadeIn">
+    <div
+      className={`min-h-screen flex items-center justify-center transition-colors duration-300
+        ${
+          isDark
+            ? "bg-[#0d0f18]"
+            : "bg-linear-to-br from-[#e4e3ff] to-white"
+        }`}
+    >
+      <div
+        className={`w-[90%] max-w-md p-8 rounded-3xl shadow-2xl text-center animate-fadeIn border
+          backdrop-blur-xl transition-all duration-300
+          ${
+            isDark
+              ? "bg-[#141726]/90 border-[#2c3150] shadow-[0_0_20px_rgba(0,0,0,0.35)]"
+              : "bg-white/90 border-[#e1e2f1]"
+          }`}
+      >
         <img
           src="/smarttask-logo.png"
           alt="SmartTask"
           className="mx-auto mb-6 w-44"
         />
 
-        <h2 className="text-2xl font-semibold text-[#6668a3] mb-2">
+        <h2
+          className={`text-2xl font-semibold mb-2
+            ${isDark ? "text-[#b8b9ff]" : "text-[#6668a3]"}`}
+        >
           Create Account ✨
         </h2>
-        <p className="text-sm text-gray-500 mb-6">
+
+        <p
+          className={`text-sm mb-6 
+            ${isDark ? "text-gray-400" : "text-gray-500"}`}
+        >
           Join SmartTask and stay organized every day.
         </p>
 
@@ -61,41 +90,73 @@ export default function Signup({ setUser }) {
             placeholder="Full Name"
             value={form.name}
             onChange={handleChange}
-            className="border border-[#e1e2f1] rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand focus:outline-none"
             required
+            className={`p-3 text-sm rounded-xl border transition
+              focus:ring-2 focus:outline-none
+              ${
+                isDark
+                  ? "bg-[#1b1e2d] border-[#303456] text-gray-200 focus:ring-[#7f82ff]"
+                  : "bg-white border-[#ddddef] text-gray-700 focus:ring-brand"
+              }`}
           />
+
           <input
             type="email"
             name="email"
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
-            className="border border-[#e1e2f1] rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand focus:outline-none"
             required
+            className={`p-3 text-sm rounded-xl border transition
+              focus:ring-2 focus:outline-none
+              ${
+                isDark
+                  ? "bg-[#1b1e2d] border-[#303456] text-gray-200 focus:ring-[#7f82ff]"
+                  : "bg-white border-[#ddddef] text-gray-700 focus:ring-brand"
+              }`}
           />
-          <input
-            type="password"
+
+          <PasswordInput
+            label="Password"
             name="password"
-            placeholder="Password"
             value={form.password}
             onChange={handleChange}
-            className="border border-[#e1e2f1] rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand focus:outline-none"
             required
+            className={`p-3 text-sm rounded-xl border transition w-full
+              focus:ring-2 focus:outline-none
+              ${
+                isDark
+                  ? "bg-[#1b1e2d] border-[#303456] text-gray-200 focus:ring-[#7f82ff]"
+                  : "bg-white border-[#e1e2f1] text-gray-700 focus:ring-brand"
+              }`}
           />
 
           <button
             type="submit"
-            className="mt-3 bg-brand hover:bg-[#6267f3] text-white font-medium rounded-xl py-3 transition-all duration-300 shadow-md"
+            className={`mt-3 py-3 rounded-xl font-medium text-white transition-all duration-300 shadow-md
+              ${
+                isDark
+                  ? "bg-[#7f82ff] hover:bg-[#9a9dff]"
+                  : "bg-brand hover:bg-[#6267f3]"
+              }`}
           >
             {isLoading ? "Signing Up..." : "Sign Up"}
           </button>
         </form>
 
-        <p className="text-sm text-gray-600 mt-5">
+        <p
+          className={`text-sm mt-5 
+            ${isDark ? "text-gray-300" : "text-gray-600"}`}
+        >
           Already have an account?{" "}
           <Link
             to="/login"
-            className="text-[#6668a3] font-semibold hover:text-[#5a5dcf]"
+            className={`font-semibold transition
+              ${
+                isDark
+                  ? "text-[#9c9eff] hover:text-[#c5c7ff]"
+                  : "text-[#6668a3] hover:text-[#5a5dcf]"
+              }`}
           >
             Log in
           </Link>

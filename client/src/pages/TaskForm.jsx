@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios.js";
+import useTheme from "../hooks/useTheme.js";
 
 const TaskForm = ({ setIsModalOpen, refresh, editingTask }) => {
   // Preload existing data if editing
@@ -11,6 +12,9 @@ const TaskForm = ({ setIsModalOpen, refresh, editingTask }) => {
     priority: "Medium",
   });
   const [isLoading, setIsLoading] = useState(false);
+
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   useEffect(() => {
     if (editingTask) setFormData(editingTask);
@@ -27,31 +31,58 @@ const TaskForm = ({ setIsModalOpen, refresh, editingTask }) => {
     setIsLoading(true);
     try {
       if (editingTask) {
-        await api.put(
-          `/tasks/${editingTask._id}`,
-          formData
-        );
+        await api.put(`/tasks/${editingTask._id}`, formData);
       } else {
         await api.post("/tasks", formData);
-        console.log("Form data", formData);
-        
       }
       refresh(); // Reload task list
       setIsModalOpen(false); // Close modal
-      setIsLoading(!isLoading);
+      setIsLoading(false);
     } catch (err) {
       console.error("Error saving task:", err);
-      setIsLoading(!isLoading);
+      setIsLoading(false);
     }
   };
 
+  // shared input style
+  const inputBase =
+    "w-full rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand transition border";
+
+  const inputClass = `${inputBase} ${
+    isDark
+      ? "bg-[#171822] border-[#343648] text-gray-100 placeholder-gray-400"
+      : "bg-white border-[#d6d7f5] text-gray-800 placeholder-gray-400"
+  }`;
+
+  const selectClass = `${inputBase} ${
+    isDark
+      ? "bg-[#171822] border-[#343648] text-gray-100"
+      : "bg-white border-[#d6d7f5] text-gray-800"
+  }`;
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
+    <div
+      className={`fixed inset-0 flex items-center justify-center ${
+        isDark ? "bg-black/60" : "bg-black/35"
+      } backdrop-blur-sm z-50`}
+      onClick={() => setIsModalOpen(false)}
+    >
+      {/* stop click bubbling so clicks inside the card don’t close it */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-xl shadow-lg p-6 w-[90%] max-w-md animate-fadeIn"
+        onClick={(e) => e.stopPropagation()}
+        className={`w-[90%] max-w-md rounded-2xl shadow-xl border p-6 sm:p-7 animate-fadeIn
+          ${
+            isDark
+              ? "bg-[#11121a] border-[#292a36] text-gray-100"
+              : "bg-white/95 border-[#e1e2f1] text-gray-900"
+          }`}
       >
-        <h2 className="text-xl font-semibold text-[#6668a3] mb-4">
+        <h2
+          className={`text-xl font-semibold mb-5 ${
+            isDark ? "text-gray-50" : "text-[#6668a3]"
+          }`}
+        >
           {editingTask ? "Edit Task" : "Add New Task"}
         </h2>
 
@@ -62,7 +93,7 @@ const TaskForm = ({ setIsModalOpen, refresh, editingTask }) => {
           placeholder="Task Title"
           value={formData.title}
           onChange={handleChange}
-          className="border border-[#6668a3] focus:shadow-[0_0_5px_rgba(0,123,255,0.5)] focus:outline-none rounded-lg w-full p-2 mb-3"
+          className={inputClass + " mb-3"}
           required
         />
 
@@ -72,8 +103,9 @@ const TaskForm = ({ setIsModalOpen, refresh, editingTask }) => {
           placeholder="Description"
           value={formData.description}
           onChange={handleChange}
-          className="border border-[#6668a3] focus:shadow-[0_0_5px_rgba(0,123,255,0.5)] focus:outline-none rounded-lg w-full p-2 mb-3"
-        ></textarea>
+          rows={4}
+          className={inputClass + " mb-3 resize-none"}
+        />
 
         {/* DUE DATE */}
         <input
@@ -81,16 +113,16 @@ const TaskForm = ({ setIsModalOpen, refresh, editingTask }) => {
           name="dueDate"
           value={formData.dueDate ? formData.dueDate.split("T")[0] : ""}
           onChange={handleChange}
-          className="border border-[#6668a3] focus:shadow-[0_0_5px_rgba(0,123,255,0.5)] focus:outline-none rounded-lg w-full p-2 mb-3"
+          className={inputClass + " mb-4"}
         />
 
         {/* STATUS & PRIORITY */}
-        <div className="flex gap-3 mb-3">
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <select
             name="status"
             value={formData.status}
             onChange={handleChange}
-            className="border border-[#6668a3] focus:shadow-[0_0_5px_rgba(0,123,255,0.5)] focus:outline-none rounded-lg p-2 flex-1"
+            className={selectClass}
           >
             <option>Pending</option>
             <option>Completed</option>
@@ -100,7 +132,7 @@ const TaskForm = ({ setIsModalOpen, refresh, editingTask }) => {
             name="priority"
             value={formData.priority}
             onChange={handleChange}
-            className="border border-[#6668a3] focus:shadow-[0_0_5px_rgba(0,123,255,0.5)] focus:outline-none rounded-lg p-2 flex-1"
+            className={selectClass}
           >
             <option>Low</option>
             <option>Medium</option>
@@ -109,17 +141,27 @@ const TaskForm = ({ setIsModalOpen, refresh, editingTask }) => {
         </div>
 
         {/* ACTION BUTTONS */}
-        <div className="flex justify-between">
+        <div className="flex justify-end gap-3">
           <button
             type="button"
             onClick={() => setIsModalOpen(false)}
-            className="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400"
+            className={`px-4 py-2 text-sm font-medium rounded-lg border transition
+              ${
+                isDark
+                  ? "bg-[#1f202b] text-gray-200 border-[#3b3d52] hover:bg-[#272936]"
+                  : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
+              }`}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="bg-brand text-white px-4 py-2 rounded-lg hover:bg-[#7c7ede]"
+            className={`px-4 py-2 text-sm font-semibold rounded-lg text-white shadow-sm transition
+              ${
+                isDark
+                  ? "bg-brand-dark hover:bg-brand"
+                  : "bg-brand hover:bg-brand-dark"
+              }`}
           >
             {isLoading ? "Saving..." : "Save Task"}
           </button>

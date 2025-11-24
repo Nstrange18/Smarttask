@@ -59,3 +59,53 @@
     @apply bg-white/30 backdrop-blur-md rounded-card p-card shadow;
   }
 }
+
+/* ============================
+      GLOBAL DARK MODE 
+===============================*/
+html.dark body {
+  background-color: #0c0e12;
+  color: #e5e7eb;
+}
+
+/* CARD SURFACES */
+html.dark .card,
+html.dark .task-card {
+  background-color: #13151a !important;
+  border: 1px solid #1f2230 !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25) !important;
+}
+
+/* INPUTS */
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #181a20 !important;
+  border: 1px solid #2a2d3a !important;
+  color: #e5e7eb !important;
+}
+
+/* NAVIGATION BAR */
+html.dark .navbar {
+  background-color: #11131a !important;
+  border-bottom: 1px solid #1f2230 !important;
+}
+
+/* SIDEBAR */
+html.dark .sidebar {
+  background-color: #0d0f14 !important;
+  border-right: 1px solid #1d1f28 !important;
+}
+
+/* PRIMARY BUTTON */
+html.dark .btn-primary {
+  background-color: #6a6cf7 !important;
+  color: white !important;
+}
+
+/* FLOATING ADD BUTTON */
+html.dark .floating-add {
+  background-color: #7d7ffb !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(125,127,251,0.3);
+}

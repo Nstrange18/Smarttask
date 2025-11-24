@@ -4,6 +4,7 @@ import User from "../models/User.js";
 import { protect } from "../middleware/authMiddleware.js";
 import upload from "../middleware/upload.js";
 import bcrypt from "bcryptjs";
+import Task from "../models/Tasks.js";
 
 const router = express.Router();
 
@@ -112,5 +113,68 @@ router.put(
     }
   }
 );
+
+// CHANGE PASSWORD
+router.put("/change-password", protect, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    // 1. Ensure both are provided
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Both fields are required" });
+    }
+
+    // 2. Fetch user
+    const user = await User.findById(req.user.id);
+
+    // 3. Validate current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Current password is incorrect" });
+    }
+
+    // 4. Prevent using the same password again
+    const isSame = await bcrypt.compare(newPassword, user.password);
+    if (isSame) {
+      return res
+        .status(400)
+        .json({ message: "New password must be different" });
+    }
+
+    // 5. Hash new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedNewPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+    console.log("Change Password Error", error);
+  }
+});
+
+// DELETE ACCOUNT
+router.delete("/delete-account", protect, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // 1. Delete all user tasks
+    await Task.deleteMany({ user: userId });
+
+    // Delete Cloudinary profile photo
+    if (req.user.profilePic && req.user.profilePic.includes("cloudinary")) {
+      const publicId = req.user.profilePic.split("/").pop().split(".")[0];
+      cloudinary.uploader.destroy(`smarttask/profiles/${publicId}`);
+    }
+
+    // 3. Delete user from database
+    await User.findByIdAndDelete(userId);
+
+    res.status(200).json({ message: "Account deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+    console.log("Delete Account Error", error);
+  }
+});
 
 export default router;

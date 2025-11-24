@@ -14,9 +14,12 @@ import Signup from "./pages/Signup";
 import api from "./api/axios";
 import Protection from "./component/Protection/Protection";
 import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
+import ThemeProvider from "./Provider/ThemeProvider";
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
+
 
   // Fetch all tasks
   const fetchTasks = async () => {
@@ -42,44 +45,40 @@ const App = () => {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<RootLayout />}>
-        <Route
-          index
-          element={
-            <Protection>
-              <TaskList tasks={tasks} refresh={fetchTasks} />
-            </Protection>
-          }
-        />
-        <Route
-          path="tasks"
-          element={
-            <Protection>
-              <TaskForm refresh={fetchTasks} />
-            </Protection>
-          }
-        />
+      <>
+        <Route path="login" element={<Login setUser={setUser} />} />
+        <Route path="signup" element={<Signup setUser={setUser} />} />
 
         <Route
-          path="/profile"
+          path="/"
           element={
             <Protection>
-              <Profile user={user} setUser={setUser} />
+              <RootLayout />
             </Protection>
           }
-        />
-        <Route path="login" element={<Login setUser={setUser}/>} />
-        <Route path="signup" element={<Signup setUser={setUser}/>} />
-      </Route>
+        >
+          <Route
+            index
+            element={<TaskList tasks={tasks} refresh={fetchTasks} />}
+          />
+          <Route path="tasks" element={<TaskForm refresh={fetchTasks} />} />
+          <Route
+            path="/profile"
+            element={<Profile user={user} setUser={setUser} />}
+          />
+          <Route
+            path="/settings"
+            element={<Settings />}
+          />
+        </Route>
+      </>
     )
   );
 
   return (
-    <div>
-      {/* <TaskForm refresh={fetchTasks} />
-      <TaskList tasks={tasks} refresh={fetchTasks} /> */}
+    <ThemeProvider>
       <RouterProvider router={router} />
-    </div>
+    </ThemeProvider>
   );
 };
 
