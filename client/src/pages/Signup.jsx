@@ -1,31 +1,33 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 import swal from "sweetalert";
 import PasswordInput from "../component/PasswordInput";
 import useTheme from "../hooks/useTheme";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 export default function Signup({ setUser }) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(
+      z.object({
+        name: z.string().min(8, "Name must be at least 8 characters").nonempty("Name is required"),
+        email: z.string().email("Invalid email address"),
+        password: z.string().min(6).max(16),
+      })
+    ),
   });
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-
+  const onSubmit = async (data) => {
     try {
-      const res = await api.post("/auth/signup", form);
+      const res = await api.post("/auth/signup", data);
 
       swal("Account Created 🎉", "Welcome to SmartTask!", "success");
 
@@ -40,19 +42,13 @@ export default function Signup({ setUser }) {
         err.response?.data?.message || "Something went wrong",
         "error"
       );
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
     <div
       className={`min-h-screen flex items-center justify-center transition-colors duration-300
-        ${
-          isDark
-            ? "bg-[#0d0f18]"
-            : "bg-linear-to-br from-[#e4e3ff] to-white"
-        }`}
+        ${isDark ? "bg-[#0d0f18]" : "bg-linear-to-br from-[#e4e3ff] to-white"}`}
     >
       <div
         className={`w-[90%] max-w-md p-8 rounded-3xl shadow-2xl text-center animate-fadeIn border
@@ -83,14 +79,12 @@ export default function Signup({ setUser }) {
           Join SmartTask and stay organized every day.
         </p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
           <input
             type="text"
             name="name"
             placeholder="Full Name"
-            value={form.name}
-            onChange={handleChange}
-            required
+            {...register("name")}
             className={`p-3 text-sm rounded-xl border transition
               focus:ring-2 focus:outline-none
               ${
@@ -99,14 +93,15 @@ export default function Signup({ setUser }) {
                   : "bg-white border-[#ddddef] text-gray-700 focus:ring-brand"
               }`}
           />
+          {errors.name && (
+            <p className="text-red-500 text-sm">{errors.name.message}</p>
+          )}
 
           <input
             type="email"
             name="email"
             placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
+            {...register("email")}
             className={`p-3 text-sm rounded-xl border transition
               focus:ring-2 focus:outline-none
               ${
@@ -115,13 +110,14 @@ export default function Signup({ setUser }) {
                   : "bg-white border-[#ddddef] text-gray-700 focus:ring-brand"
               }`}
           />
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email.message}</p>
+          )}
 
           <PasswordInput
             label="Password"
             name="password"
-            value={form.password}
-            onChange={handleChange}
-            required
+            register={register("password")}
             className={`p-3 text-sm rounded-xl border transition w-full
               focus:ring-2 focus:outline-none
               ${
@@ -130,6 +126,9 @@ export default function Signup({ setUser }) {
                   : "bg-white border-[#e1e2f1] text-gray-700 focus:ring-brand"
               }`}
           />
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          )}
 
           <button
             type="submit"
@@ -140,7 +139,7 @@ export default function Signup({ setUser }) {
                   : "bg-brand hover:bg-[#6267f3]"
               }`}
           >
-            {isLoading ? "Signing Up..." : "Sign Up"}
+            {isSubmitting ? "Signing Up..." : "Sign Up"}
           </button>
         </form>
 

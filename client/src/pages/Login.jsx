@@ -1,28 +1,32 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 import swal from "sweetalert";
 import PasswordInput from "../component/PasswordInput";
 import useTheme from "../hooks/useTheme";
+import { useForm } from "react-hook-form";
+import {z} from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function Login({ setUser }) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [isLoading, setIsLoading] = useState(false);
+  const schema = z.object({
+    email: z.string().email(),
+    password: z.string().min(6).max(16),
+  });
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-
+  const onSubmit = async (data) => {
     try {
-      const res = await api.post("/auth/login", form);
-
+      const res = await api.post("/auth/login", data);
       swal("Welcome back!", "Login successful 🎉", "success");
 
       setUser(res.data.user);
@@ -36,19 +40,13 @@ export default function Login({ setUser }) {
         err.response?.data?.message || "Something went wrong",
         "error"
       );
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
     <div
       className={`min-h-screen flex items-center justify-center transition-colors duration-300
-        ${
-          isDark
-            ? "bg-[#0d0f18]"
-            : "bg-linear-to-br from-[#e4e3ff] to-white"
-        }`}
+        ${isDark ? "bg-[#0d0f18]" : "bg-linear-to-br from-[#e4e3ff] to-white"}`}
     >
       <div
         className={`w-[90%] max-w-md p-8 rounded-3xl shadow-2xl text-center animate-fadeIn border
@@ -82,14 +80,12 @@ export default function Login({ setUser }) {
         </p>
 
         {/* FORM */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
           <input
+            {...register("email")}
             type="email"
             name="email"
             placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
             className={`p-3 text-sm rounded-xl border transition
               focus:ring-2 focus:outline-none
               ${
@@ -98,13 +94,14 @@ export default function Login({ setUser }) {
                   : "bg-white border-[#ddddef] text-gray-700 focus:ring-brand"
               }`}
           />
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email.message}</p>
+          )}
 
           <PasswordInput
             label="Password"
             name="password"
-            value={form.password}
-            onChange={handleChange}
-            required
+            register={register("password")}
             className={`p-3 text-sm rounded-xl border transition
               focus:ring-2 focus:outline-none w-full
               ${
@@ -113,17 +110,21 @@ export default function Login({ setUser }) {
                   : "bg-white border-[#e1e2f1] text-gray-700 focus:ring-brand"
               }`}
           />
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          )}
 
           <button
             type="submit"
-            className={`mt-3 py-3 rounded-xl font-medium text-white shadow-md transition-all duration-300
+            disabled={isSubmitting}
+            className={`${isSubmitting ? "cursor-not-allowed" : "cursor-pointer"}mt-3 py-3 rounded-xl font-medium text-white shadow-md transition-all duration-300
               ${
                 isDark
                   ? "bg-[#7f82ff] hover:bg-[#9a9dff]"
                   : "bg-brand hover:bg-[#6267f3]"
               }`}
           >
-            {isLoading ? "Signing In..." : "Sign In"}
+            {isSubmitting ? "Signing In..." : "Sign In"}
           </button>
         </form>
 

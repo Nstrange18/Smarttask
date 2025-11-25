@@ -9,7 +9,6 @@ import useTheme from "../hooks/useTheme.js";
 const TaskList = ({ tasks: initialTasks, refresh }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  // const [isComplete, setIsComplete] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredTasks, setFilteredTasks] = useState(initialTasks);
   const [filters, setFilters] = useState({ status: "", priority: "" });
