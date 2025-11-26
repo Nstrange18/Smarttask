@@ -80,8 +80,8 @@ html.dark .task-card {
 html.dark input,
 html.dark textarea,
 html.dark select {
-  background-color: #181a20 !important;
-  border: 1px solid #2a2d3a !important;
+  /* background-color: #181a20 !important;
+  border: 1px solid #2a2d3a !important; */
   color: #e5e7eb !important;
 }
 

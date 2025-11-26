@@ -28,7 +28,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
       <aside
         className={`
           fixed top-0 left-0 h-full z-999
-          w-56 p-4 flex flex-col justify-between
+          w-45 p-4 flex flex-col justify-between
           transition-transform duration-300 ease-in-out
 
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
@@ -37,13 +37,13 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
       >
         {/* TOP: LOGO + NAME */}
         <div>
-          <div className="flex items-center gap-3 mb-8 border-b border-gray-600/30 pb-4">
+          <div className="flex items-center gap-1 mb-8 border-b border-gray-600/30 pt-12">
             <img
               src="/smarttask-icon.png"
-              width={40}
-              className="rounded-full"
+              width={50}
+              className="rounded-full object-cover"
             />
-            <span className="text-lg font-bold">SmartTask</span>
+            <span className="text-lg font-bold">smarttask</span>
           </div>
 
           {/* MENU LINKS */}
