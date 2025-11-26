@@ -3,16 +3,18 @@ import Sidebar from "../component/Sidebar";
 import { useState } from "react";
 
 const RootLayout = () => {
-  const [sidebarHover, setSidebarHover] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div>
-      <Sidebar setSidebarHover={setSidebarHover} />
+    <div className="flex">
+      <Sidebar
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+      />
 
-      {sidebarHover && (
-        <div className="fixed top-0 left-20 w-[calc(100%-5rem)] h-full bg-black/30 backdrop-blur-sm z-50 transition-all ease-in duration-700 delay-150"></div>
-      )}
-      <Outlet />
+      <main className="flex-1 sm:ml-20 p-0">
+        <Outlet />
+      </main>
     </div>
   );
 };
