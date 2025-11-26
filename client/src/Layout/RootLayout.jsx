@@ -1,20 +1,26 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "../component/Sidebar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const RootLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
+
+  // AUTO COLLAPSE SIDEBAR ON PAGE CHANGE
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [location.pathname]);
 
   return (
     <div className="flex">
       <Sidebar
         isSidebarOpen={isSidebarOpen}
-        toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+        toggleSidebar={() => setIsSidebarOpen(prev => !prev)}
       />
 
-      <main className="flex-1 sm:ml-20 p-0">
+      <div className="flex-1 ml-0 sm:ml-20 p-0 sm:p-0">
         <Outlet />
-      </main>
+      </div>
     </div>
   );
 };
